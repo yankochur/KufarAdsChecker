@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup as BS
 
 url = 'https://re.kufar.by/l/brest/kupit/kvartiru?cnd=2&cur=USD'        # (with filter)
 has_next_page = True        #
-
+started = False
 while has_next_page:
     response = requests.get(url)    # get content from url
     html = BS(response.content, 'html.parser')       # put the content from response
@@ -20,8 +20,15 @@ while has_next_page:
         size = ad.find('div', class_='styles_parameters__p2sHq').text
         print(adress, '|', price, '|', size)
 
-    next_page_link = html.find('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')
-
+    arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')
+    if len(arrows) == 1:
+        next_page_link = arrows[0]
+        if started is False:
+            started = True
+        else:
+            break
+    else:
+        next_page_link = arrows[1]
 
     if next_page_link:
         url = 'https://re.kufar.by' + next_page_link['href']
