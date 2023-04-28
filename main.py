@@ -18,17 +18,20 @@ while has_next_page:
         adress = ad.find('span', class_='styles_address__dfWQi').text
         price = ad.find('span', class_='styles_price__byr__FKDpp').text
         size = ad.find('div', class_='styles_parameters__p2sHq').text
-        print(adress, '|', price, '|', size)
+        link = ad['href'].split("?")[0]         # split = split code on "?" symbol (like key[space])
+        print(adress, '|', price, '|', size, '|', link)
 
-    arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')
-    if len(arrows) == 1:
-        next_page_link = arrows[0]
+
+
+    arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')        # step on next pages
+    if len(arrows) == 1:                # if links 1 unit
+        next_page_link = arrows[0]      # take first[0] link
         if started is False:
-            started = True
+            started = True              # and start script
         else:
             break
     else:
-        next_page_link = arrows[1]
+        next_page_link = arrows[1]      # else take second[1] link
 
     if next_page_link:
         url = 'https://re.kufar.by' + next_page_link['href']
