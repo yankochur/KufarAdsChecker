@@ -11,8 +11,11 @@ def main():
     # new_database = """ CREATE TABLE IF NOT EXISTS kufar_ads (id INTEGER) """      # create database
     # cursor.execute(new_database)
 
-    # add_column_in_database = """ ALTER TABLE kufar_ads ADD COLUMN sent BOOL; """      # create column "sent"
+    # add_column_in_database = """ ALTER TABLE kufar_ads ADD COLUMN sent INTEGER; """      # create column "sent"
     # cursor.execute(add_column_in_database)
+
+    # add_column_status_in_database = """ ALTER TABLE kufar_ads ALTER COLUMN sent SET DEFAULT 'False'; """      # create column "sent"
+    # cursor.execute(add_column_status_in_database)
 
     # cursor.execute("DELETE FROM kufar_ads")         # delete all from database
 
@@ -35,10 +38,10 @@ def main():
 
             select_query = """ SELECT id FROM kufar_ads WHERE id = ?; """
             cursor.execute(select_query, (link_id,))
-            result = cursor.fetchone
+            result = cursor.fetchone()
             if not result:      # check for the existence of the next line in db
                 ins_query = """ INSERT INTO kufar_ads (id, sent) VALUES (?, ?); """       # add values into db
-                cursor.execute(ins_query, (link_id, True))
+                cursor.execute(ins_query, (link_id, 0))
                 conn.commit()
 
 
