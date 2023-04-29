@@ -36,14 +36,23 @@ def main():
             link_id = link.split("/")[-1]
             # print(adress, '|', price, '|', size, '|', link)
 
-            select_query = """ SELECT id FROM kufar_ads WHERE id = ?; """
-            cursor.execute(select_query, (link_id,))
+            select_query1 = """ SELECT id FROM kufar_ads WHERE id = ?; """
+            cursor.execute(select_query1, (link_id,))
             result = cursor.fetchone()
             if not result:      # check for the existence of the next line in db
                 ins_query = """ INSERT INTO kufar_ads (id, sent) VALUES (?, ?); """       # add values into db
                 cursor.execute(ins_query, (link_id, 0))
+
+            select_query2 = """SELECT id FROM kufar_ads WHERE sent=0"""              #
+            cursor.execute(select_query2)                                            #
+            rows = cursor.fetchall()                                                 #
+            if len(rows) > 0:                                                        #
+                update_query = """UPDATE kufar_ads SET sent=1 WHERE sent=0"""        # use data where sent=0 and assign them sent=1
+                cursor.execute(update_query)
                 conn.commit()
 
+                # for row in rows:
+                #     print(row[0])
 
         arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')        # step on next pages
         if len(arrows) == 1:                # if links 1 unit
