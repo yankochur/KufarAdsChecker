@@ -25,7 +25,7 @@ def main():
 
     # cursor.execute("DELETE FROM kufar_ads")         # delete all from database
 
-    url = 'https://re.kufar.by/l/brest/kupit/kvartiru?cnd=2&cur=USD'        # (with filter)
+    url = 'https://re.kufar.by/l/brest/kupit/kvartiru?cnd=2&cur=USD&gbx=b%3A23.605041639404277%2C51.84106358705331%2C24.01702894409179%2C52.1880572948453&oph=1&size=30'        # (with filter)
     has_next_page = True
     started = False
     while has_next_page:
@@ -33,34 +33,39 @@ def main():
         html = BS(response.content, 'html.parser')       # put the content from response
         ads = html.find_all('a', class_='styles_wrapper__KkryZ')         # search in class_
 
-
         for ad in ads:
-            # adress = ad.find('span', class_='styles_address__dfWQi').text
-            # price = ad.find('span', class_='styles_price__byr__FKDpp').text
-            # size = ad.find('div', class_='styles_parameters__p2sHq').text
+            photo = ad.find('img', class_='styles_image--blur__qdvGq lazyload')['data-src']
+            adress = ad.find('span', class_='styles_address__dfWQi').text
+            price = ad.find('span', class_='styles_price__byr__FKDpp').text
+            size = ad.find('div', class_='styles_parameters__p2sHq').text
             link = ad['href'].split("?")[0]         # split = split code on "?" symbol (like key[space])
             link_id = link.split("/")[-1]
-            # print(adress, '|', price, '|', size, '|', link)
+            full_info = (f'НОВОЕ ОБЪЯВЛЕНИЕ: \n\n<b>{price}</b>\n\n{adress}\n\n{size}\n\n{link}')
+            # print(full_info)
+            # print(photo)
 
-            select_query1 = """ SELECT id FROM kufar_ads WHERE id = ?; """
+            select_query1 = """ SELECT * FROM kufar_ads WHERE id = ?; """
             cursor.execute(select_query1, (link_id,))
             result = cursor.fetchone()
-            if not result:      # check for the existence of the next line in db
-                ins_query = """ INSERT INTO kufar_ads (id, sent) VALUES (?, ?); """       # add values into db
-                cursor.execute(ins_query, (link_id, 0))
 
-            select_query2 = """SELECT id FROM kufar_ads WHERE sent=0"""              #
-            cursor.execute(select_query2)
-            # mess = 'пися'
-            # bot.send_message(chat_id, mess)
-            rows = cursor.fetchall()                                                 #
-            if len(rows) > 0:
-                update_query = """UPDATE kufar_ads SET sent=1 WHERE sent=0"""        # use data where sent=0 and assign them sent=1
-                cursor.execute(update_query)
+            if not result:
+                ins_query = """ INSERT INTO kufar_ads (id, sent) VALUES (?, ?); """       # add values into db
+                bot.send_photo(chat_id, photo, full_info, parse_mode='html')
+                print(full_info)
+                cursor.execute(ins_query, (link_id, 1))
                 conn.commit()
 
-                # for row in rows:
-                #     print(row[0])
+            # select_query2 = """SELECT * FROM kufar_ads WHERE sent=1"""
+            # cursor.execute(select_query2)
+            # result = cursor.fetchall()
+            #
+            # for row in result:
+            #     bot.send_photo(chat_id, photo, full_info, parse_mode='html')
+            #     print(full_info)
+            #     update_query = """UPDATE kufar_ads SET sent=0 WHERE id=?"""
+            #     cursor.execute(update_query, (row[0],))
+            #     conn.commit()                                      this code incorrect
+
 
         arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')        # step on next pages
         if len(arrows) == 1:                # if links 1 unit
