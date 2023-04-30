@@ -1,11 +1,17 @@
 import requests
 import sqlite3
+import telebot
+from telebot import types
 from bs4 import BeautifulSoup as BS
 
 
 # Буду максимально расписывать для собственного понимания кода.
 
+bot = telebot.TeleBot('6297625675:AAFHEO4KKErR5dFTCOR55CwIohrZ-TxRI6c')
+chat_id = '895006206'
+
 def main():
+
     conn = sqlite3.connect('kufar_ads.db')
     cursor = conn.cursor()
     # new_database = """ CREATE TABLE IF NOT EXISTS kufar_ads (id INTEGER) """      # create database
@@ -44,9 +50,11 @@ def main():
                 cursor.execute(ins_query, (link_id, 0))
 
             select_query2 = """SELECT id FROM kufar_ads WHERE sent=0"""              #
-            cursor.execute(select_query2)                                            #
+            cursor.execute(select_query2)
+            # mess = 'пися'
+            # bot.send_message(chat_id, mess)
             rows = cursor.fetchall()                                                 #
-            if len(rows) > 0:                                                        #
+            if len(rows) > 0:
                 update_query = """UPDATE kufar_ads SET sent=1 WHERE sent=0"""        # use data where sent=0 and assign them sent=1
                 cursor.execute(update_query)
                 conn.commit()
