@@ -9,7 +9,12 @@ from bs4 import BeautifulSoup as BS
 # Буду максимально расписывать для собственного понимания кода.
 
 config = configparser.ConfigParser()
-config.read('config.txt')
+config.read('config.txt')           # make config.txt:
+                                    # [DEFAULT]
+                                    # bot_token={your_token}
+                                    # chat_id={your_chat_id}
+
+
 
 bot_token = config.get('DEFAULT', 'bot_token')
 chat_id = config.get('DEFAULT', 'chat_id')
