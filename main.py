@@ -1,5 +1,6 @@
 import requests
 import sqlite3
+import configparser
 import telebot
 from telebot import types
 from bs4 import BeautifulSoup as BS
@@ -7,8 +8,13 @@ from bs4 import BeautifulSoup as BS
 
 # Буду максимально расписывать для собственного понимания кода.
 
-bot = telebot.TeleBot('6297625675:AAFHEO4KKErR5dFTCOR55CwIohrZ-TxRI6c')
-chat_id = '895006206'
+config = configparser.ConfigParser()
+config.read('config.txt')
+
+bot_token = config.get('DEFAULT', 'bot_token')
+chat_id = config.get('DEFAULT', 'chat_id')
+
+bot = telebot.TeleBot('bot_token')
 
 def main():
 
