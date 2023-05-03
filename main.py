@@ -23,6 +23,7 @@ bot = telebot.TeleBot('bot_token')
 
 def main():
 
+    print(bot_token, chat_id, 'a')
     conn = sqlite3.connect('kufar_ads.db')
     cursor = conn.cursor()
     # new_database = """ CREATE TABLE IF NOT EXISTS kufar_ads (id INTEGER) """      # create database
@@ -61,7 +62,7 @@ def main():
 
             if not result:
                 ins_query = """ INSERT INTO kufar_ads (id, sent) VALUES (?, ?); """       # add values into db
-                bot.send_photo(chat_id, photo, full_info, parse_mode='html')
+                bot.send_photo(chat_id, photo, full_info, parse_mode='html')            # A request to the Telegram API was unsuccessful. Error code: 404. Description: Not Found
                 print(full_info)
                 cursor.execute(ins_query, (link_id, 1))
                 conn.commit()
@@ -77,14 +78,14 @@ def main():
             #     cursor.execute(update_query, (row[0],))
             #     conn.commit()                                      this code incorrect
 
-
+        print(full_info)
         arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')        # step on next pages
         if len(arrows) == 1:                # if links 1 unit
             next_page_link = arrows[0]      # take first[0] link
             if started is False:
                 started = True              # and start script
             else:
-                break
+                pass
         else:
             next_page_link = arrows[1]      # else take second[1] link
 
