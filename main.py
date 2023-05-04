@@ -67,18 +67,17 @@ def main():
                 cursor.execute(ins_query, (link_id, 1))
                 conn.commit()
 
-            # select_query2 = """SELECT * FROM kufar_ads WHERE sent=1"""
-            # cursor.execute(select_query2)
-            # result = cursor.fetchall()
-            #
-            # for row in result:
-            #     bot.send_photo(chat_id, photo, full_info, parse_mode='html')
-            #     print(full_info)
-            #     update_query = """UPDATE kufar_ads SET sent=0 WHERE id=?"""
-            #     cursor.execute(update_query, (row[0],))
-            #     conn.commit()                                      this code incorrect
+            select_query2 = """SELECT * FROM kufar_ads WHERE sent=1"""
+            cursor.execute(select_query2)
+            result = cursor.fetchall()
 
-        print(full_info)
+            for row in result:
+                # bot.send_photo(chat_id, photo, full_info, parse_mode='html')
+                print(full_info)
+                update_query = """UPDATE kufar_ads SET sent=0 WHERE id=?"""
+                cursor.execute(update_query, (row[0],))
+                conn.commit()                                    #  this code incorrect
+
         arrows = html.find_all('a', class_='styles_link__3MFs4 styles_arrow__r6dv_')        # step on next pages
         if len(arrows) == 1:                # if links 1 unit
             next_page_link = arrows[0]      # take first[0] link
