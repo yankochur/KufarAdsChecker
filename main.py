@@ -19,7 +19,7 @@ config.read('config.txt')           # make config.txt:
 bot_token = config.get('DEFAULT', 'bot_token')
 chat_id = config.get('DEFAULT', 'chat_id')
 
-bot = telebot.TeleBot('bot_token')
+bot = telebot.TeleBot(bot_token)
 
 def main():
 
