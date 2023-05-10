@@ -33,7 +33,7 @@ def main():
 
     cursor.execute("SELECT id FROM kufar_ads")
     database_content = set(row[0] for row in cursor.fetchall())
-    ids_on_page = set()
+    ads_on_page = set()
 
     while has_next_page:
         response = requests.get(url)    # get content from url
@@ -85,16 +85,16 @@ def main():
 
     # ids_to_remove = database_content.intersection(ids_on_page)
 
-    def delete_old_ads
-        ads_on_page = set(map(int, ads_on_page))
-        ads_to_remove = database_content - ads_on_page
-        print(database_content)
-        print(ads_on_page)
-        print(ads_to_remove)
+    ads_on_page = set(map(int, ads_on_page))
+    ads_to_remove = database_content - ads_on_page
 
-        delete_query = """DELETE FROM kufar_ads WHERE id IN ({})""".format(','.join("'" + str(id) + "'" for id in ads_to_remove))
-        cursor.execute(delete_query)
-        conn.commit()
+    # print(database_content)
+    # print(ads_on_page)
+    # print(ads_to_remove)          test
+
+    delete_query = """DELETE FROM kufar_ads WHERE id IN ({})""".format(','.join("'" + str(id) + "'" for id in ads_to_remove))
+    cursor.execute(delete_query)
+    conn.commit()
 
 if __name__ == '__main__':
     main()
