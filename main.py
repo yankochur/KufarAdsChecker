@@ -60,7 +60,6 @@ def main():
             if not result:
                 ins_query = """ INSERT INTO kufar_ads (id, sent) VALUES (?, ?); """
                 bot.send_photo(chat_id, photo, full_info, parse_mode='html')
-                print(full_info)
                 cursor.execute(ins_query, (link_id, 1))
                 conn.commit()
                 ads_on_page.add(link_id)
