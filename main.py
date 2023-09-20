@@ -81,3 +81,4 @@ if __name__ == '__main__':
     kufar_scraper = KufarScraper('kufar_ads.db', bot_manager, chat_id)
 
     kufar_scraper.scrape()
+#arch
