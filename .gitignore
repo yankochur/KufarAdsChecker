@@ -1,5 +1,5 @@
 .idea
 venv/
 config.txt
-kufar_ads.db
 Config
+.env

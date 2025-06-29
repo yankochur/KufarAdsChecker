@@ -1,8 +1,27 @@
-from Config.config import bot_token, chat_id
+import os
+from dotenv import load_dotenv
 import sqlite3
 import telebot
 import requests
 from bs4 import BeautifulSoup as BS
+
+load_dotenv()
+
+bot_token = os.getenv("BOT_TOKEN")
+chat_id = os.getenv("CHAT_ID")
+
+
+def initialize_database():
+    conn = sqlite3.connect('kufar_ads.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS kufar_ads (
+            id TEXT PRIMARY KEY,
+            sent INTEGER DEFAULT 0
+        );
+    ''')
+    conn.commit()
+    conn.close()
 
 
 class BotManager:
@@ -17,8 +36,9 @@ class KufarScraper:
         self.cursor = self.conn.cursor()
         self.bot_manager = bot_manager
 
+
     def scrape(self):
-        url = 'https://re.kufar.by/l/brest/kupit/kvartiru?cnd=2&cur=USD&oph=1'
+        url = 'https://re.kufar.by/l/brest/snyat/kvartiru'
         has_next_page = True
         started = False
 
@@ -33,12 +53,16 @@ class KufarScraper:
             ads = html.find_all('a', class_='styles_wrapper__Q06m9')
 
             for ad in ads:
-                photo = ad.find('img', class_='styles_image__ZPJzx lazyload')['data-src']
+                try:
+                    photo = ad.find('img', class_='styles_image__ZPJzx')['src']
+                except:
+                    photo = 'https://i.pinimg.com/280x280_RS/03/c0/f1/03c0f1485e3be504b0557c0a5d504e64.jpg'
                 address = ad.find('span', class_='styles_address__l6Qe_').text
                 price = ad.find('span', class_='styles_price__byr__lLSfd').text
                 size = ad.find('div', class_='styles_parameters__7zKlL').text
                 link = ad['href'].split("?")[0]
                 link_id = link.split("/")[-1]
+                print(photo, address, price, size, link)
                 full_info = (f'НОВОЕ ОБЪЯВЛЕНИЕ: \n\n<b>{price}</b>\n\n{address}\n\n{size}\n\n{link}')
 
 
@@ -77,8 +101,8 @@ class KufarScraper:
         self.conn.commit()
 
 if __name__ == '__main__':
+    initialize_database()
     bot_manager = BotManager(bot_token)
     kufar_scraper = KufarScraper('kufar_ads.db', bot_manager, chat_id)
 
     kufar_scraper.scrape()
-#arch
